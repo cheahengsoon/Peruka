@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
-    using System.Linq;
     using System.Reflection;
     using System.Windows;
     using System.Windows.Controls;
@@ -12,9 +11,7 @@
     using Autofac;
 
     using Caliburn.Micro;
-
-    using Knet.Phone.Client.Caliburn;
-
+    using Knet.Phone.Client;
     using Microsoft.Phone.Controls;
 
     using Peruka.Phone.Client.Core.Services;
@@ -78,7 +75,8 @@
                  .As<IStorageHandler>()
                  .InstancePerLifetimeScope();
 
-            builder.RegisterInstance<IPhoneContainer>(new AutofacPhoneContainer(container)).SingleInstance();
+            // register knet services
+            builder.RegisterAssemblyModules(typeof (PhoneClientModule).Assembly);
 
             // Register the singletons
             var frameAdapter = new FrameAdapter(this.RootFrame);
