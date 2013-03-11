@@ -11,18 +11,19 @@
     /// <remarks>
     /// Example usage:
     /// <code>
-    /// public class PerukaSettingsStore : SettingsStore
+    /// public class AppSettingsStore : SettingsStore
     /// {
     ///     public bool Username
-    /// {
-    ///     get { return this.GetValueOrDefault(true); }
-    ///     set { this.AddOrUpdateValue(value); }
+    ///     {
+    ///         get { return this.GetValueOrDefault(true); }
+    ///         set { this.AddOrUpdateValue(value); }
+    ///     }
     /// }
     /// </code>
     /// </remarks>
     public abstract class IsolatedSettingsStore : SettingsStoreBase
     {
-        private readonly IsolatedStorageSettings isolatedStore;
+        private readonly IsolatedStorageSettings _isolatedStore;
 
         #region Constructor
 
@@ -31,7 +32,7 @@
         /// </summary>
         protected IsolatedSettingsStore()
         {
-            this.isolatedStore = IsolatedStorageSettings.ApplicationSettings;
+            this._isolatedStore = IsolatedStorageSettings.ApplicationSettings;
         }
 
         #endregion
@@ -41,7 +42,7 @@
         /// </summary>
         /// <param name="value">The value of the setting.</param>
         /// <param name="key">The setting.</param>
-        protected override void AddOrUpdateValue(object value, [CallerMemberName]string key = "key")
+        protected override void AddOrUpdateValue(object value, [CallerMemberName] string key = "key")
         {
             var valueChanged = false;
 
@@ -52,30 +53,30 @@
                     if (value == null)
                     {
                         // Nothing to remove
-                        if (!this.isolatedStore.Contains(key))
+                        if (!this._isolatedStore.Contains(key))
                         {
                             return;
                         }
 
-                        this.isolatedStore.Remove(key);
+                        this._isolatedStore.Remove(key);
                         this.Save();
                     }
 
                     // If the new value is different, set the new value.
-                    if (this.isolatedStore[key] != value)
+                    if (this._isolatedStore[key] != value)
                     {
-                        this.isolatedStore[key] = value;
+                        this._isolatedStore[key] = value;
                         valueChanged = true;
                     }
                 }
                 catch (KeyNotFoundException)
                 {
-                    this.isolatedStore.Add(key, value);
+                    this._isolatedStore.Add(key, value);
                     valueChanged = true;
                 }
                 catch (ArgumentException)
                 {
-                    this.isolatedStore.Add(key, value);
+                    this._isolatedStore.Add(key, value);
                     valueChanged = true;
                 }
 
@@ -93,7 +94,7 @@
         /// <param name="defaultValue">Default value.</param>
         /// <param name="key">The name of the setting.</param>
         /// <returns>Returns the stored value if it that was stored, if not returns provided default value.</returns>
-        protected override T GetValueOrDefault<T>(T defaultValue, [CallerMemberName]string key = "key")
+        protected override T GetValueOrDefault<T>(T defaultValue, [CallerMemberName] string key = "key")
         {
             lock (this)
             {
@@ -101,7 +102,7 @@
 
                 try
                 {
-                    value = (T)this.isolatedStore[key];
+                    value = (T)this._isolatedStore[key];
                 }
                 catch (KeyNotFoundException)
                 {
@@ -123,7 +124,7 @@
         {
             try
             {
-                this.isolatedStore.Save();
+                this._isolatedStore.Save();
             }
             catch (Exception)
             {

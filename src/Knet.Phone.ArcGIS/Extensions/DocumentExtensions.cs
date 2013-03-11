@@ -17,18 +17,18 @@
             var tcs = new TaskCompletionSource<GetMapCompletedEventArgs>();
 
             document.GetMapCompleted += (sender, e) =>
-            {
-                if (e.Error != null)
                 {
-                    tcs.SetException(e.Error);
-                    return;
-                }
+                    if (e.Error != null)
+                    {
+                        tcs.SetException(e.Error);
+                        return;
+                    }
 
-                tcs.SetResult(e);
-            };
+                    tcs.SetResult(e);
+                };
 
             document.GetMapAsync(webmapId);
             return tcs.Task;
-        } 
+        }
     }
 }

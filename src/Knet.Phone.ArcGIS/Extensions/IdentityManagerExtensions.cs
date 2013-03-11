@@ -14,20 +14,18 @@
         /// <param name="password">The password.</param>
         /// <param name="tokenValidity">Token validity in minutes.</param>
         /// <returns>Returns <see cref="IdentityManager.Credential"/> as a <see cref="Task"/></returns>
-        public static Task<IdentityManager.Credential> LoginAsync(this IdentityManager identityManager, string username, string password, int tokenValidity = 5)
+        public static Task<IdentityManager.Credential> LoginAsync(
+            this IdentityManager identityManager, string username, string password, int tokenValidity = 5)
         {
             var tcs = new TaskCompletionSource<IdentityManager.Credential>();
 
             IdentityManager.Current.TokenValidity = tokenValidity;
-            IdentityManager.Current.ChallengeMethod += (url, handler, options) => IdentityManager.Current.GenerateCredentialAsync(
-                url,
-                username,
-                password,
-                handler,
-                options);
+            IdentityManager.Current.ChallengeMethod +=
+                (url, handler, options) =>
+                IdentityManager.Current.GenerateCredentialAsync(url, username, password, handler, options);
 
             IdentityManager.Current.GetCredentialAsync(
-                UrlResources.ArcGISPortalUrl,
+                UrlResources.ArcGISPortalGenerateTokenUrl,
                 true,
                 (credential, exception) =>
                     {

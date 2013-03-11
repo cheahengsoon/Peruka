@@ -1,7 +1,9 @@
 ﻿namespace Knet.Phone.Client
 {
     using Autofac;
+
     using Caliburn;
+
     using global::Caliburn.Micro;
 
     /// <summary>
@@ -11,9 +13,7 @@
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.Register(context => new AutofacPhoneContainer(context))
-                .As<IPhoneContainer>()
-                .SingleInstance();
+            builder.Register(context => new AutofacPhoneContainer(context)).As<IPhoneContainer>().SingleInstance();
         }
     }
 }

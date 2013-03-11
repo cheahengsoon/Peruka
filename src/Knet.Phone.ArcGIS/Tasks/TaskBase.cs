@@ -4,7 +4,7 @@
 
     using ESRI.ArcGIS.Client;
 
-    public abstract class TaskBase<T>
+    public abstract class TaskBase<TParameters, TResults>
     {
         #region Variables
 
@@ -22,21 +22,23 @@
         #region Properties
 
         /// <summary>
-        /// Gets or sets the target service url
+        ///     Gets or sets the target service url
         /// </summary>
         public string Url { get; set; }
 
         /// <summary>
-        /// Gets the <see cref="ArcGISWebClient"/> used.
+        ///     Gets the <see cref="ArcGISWebClient" /> used.
         /// </summary>
-        protected ArcGISWebClient WebClient { get;  private set; }
+        protected ArcGISWebClient WebClient { get; private set; }
 
-        #endregion 
+        #endregion
 
         /// <summary>
-        /// Executes task.
+        ///     Executes task.
         /// </summary>
-        /// <returns>Returns <see cref="Task"/></returns>
-        public abstract Task ExecuteAsync(T parameters);
+        /// <returns>
+        ///     Returns <see cref="Task" />
+        /// </returns>
+        public abstract Task<TResults> ExecuteAsync(TParameters parameters);
     }
 }

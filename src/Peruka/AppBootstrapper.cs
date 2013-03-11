@@ -11,7 +11,9 @@
     using Autofac;
 
     using Caliburn.Micro;
+
     using Knet.Phone.Client;
+
     using Microsoft.Phone.Controls;
 
     using Peruka.Phone.Client.Core.Services;
@@ -34,9 +36,9 @@
 
             // register view models from this assembly
             builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
-                .Where(type => type.Name.EndsWith("ViewModel"))
-                .AsSelf()
-                .InstancePerDependency();
+                   .Where(type => type.Name.EndsWith("ViewModel"))
+                   .AsSelf()
+                   .InstancePerDependency();
 
             // Register Portal Service
             builder.Register(c => new PortalService()).SingleInstance();
@@ -47,36 +49,31 @@
             // Register Settings Service
             builder.Register(c => new RouteService(container.Resolve<SettingsService>())).SingleInstance();
 
-            
             //// register view models from this assembly
             //builder.RegisterAssemblyTypes(AssemblySource.Instance.ToArray())
             //    .Where(type => type.Name.EndsWith("Service"))
             //    .AsSelf()
             //    .SingleInstance();
-            
+
             // Register phone services
             var caliburnAssembly = typeof(IStorageMechanism).Assembly;
 
             // Register IStorageMechanism implementors
             builder.RegisterAssemblyTypes(caliburnAssembly)
-                .Where(
-                    type => typeof(IStorageMechanism).IsAssignableFrom(type)
-                           && !type.IsAbstract
-                           && !type.IsInterface)
-               .As<IStorageMechanism>()
-               .InstancePerLifetimeScope();
+                   .Where(
+                       type => typeof(IStorageMechanism).IsAssignableFrom(type) && !type.IsAbstract && !type.IsInterface)
+                   .As<IStorageMechanism>()
+                   .InstancePerLifetimeScope();
 
             // Register IStorageHandler implementors
             builder.RegisterAssemblyTypes(caliburnAssembly)
-               .Where(
-                     type => typeof(IStorageHandler).IsAssignableFrom(type)
-                             && !type.IsAbstract
-                             && !type.IsInterface)
-                 .As<IStorageHandler>()
-                 .InstancePerLifetimeScope();
+                   .Where(
+                       type => typeof(IStorageHandler).IsAssignableFrom(type) && !type.IsAbstract && !type.IsInterface)
+                   .As<IStorageHandler>()
+                   .InstancePerLifetimeScope();
 
             // register knet services
-            builder.RegisterAssemblyModules(typeof (PhoneClientModule).Assembly);
+            builder.RegisterAssemblyModules(typeof(PhoneClientModule).Assembly);
 
             // Register the singletons
             var frameAdapter = new FrameAdapter(this.RootFrame);
@@ -134,14 +131,14 @@
 
         protected override void OnUnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
         {
-            #warning TODO Exception handling
+#warning TODO Exception handling
 
-            #if DEBUG
+#if DEBUG
 
-                MessageBox.Show(e.ExceptionObject.ToString());
-                Debug.WriteLine("Error : {0}", e.ExceptionObject);
+            MessageBox.Show(e.ExceptionObject.ToString());
+            Debug.WriteLine("Error : {0}", e.ExceptionObject);
 
-            #endif
+#endif
         }
 
         /// <summary>
@@ -149,39 +146,40 @@
         /// </summary>
         private static void AddCustomConventions()
         {
-            ConventionManager.AddElementConvention<Pivot>(Pivot.ItemsSourceProperty, "SelectedItem", "SelectionChanged").ApplyBinding =
-               (viewModelType, path, property, element, convention) =>
-               {
-                   if (ConventionManager
-                       .GetElementConvention(typeof(ItemsControl))
-                       .ApplyBinding(viewModelType, path, property, element, convention))
-                   {
-                       ConventionManager
-                           .ConfigureSelectedItem(element, Pivot.SelectedItemProperty, viewModelType, path);
-                       ConventionManager
-                           .ApplyHeaderTemplate(element, Pivot.HeaderTemplateProperty, null, viewModelType);
-                       return true;
-                   }
+            ConventionManager.AddElementConvention<Pivot>(Pivot.ItemsSourceProperty, "SelectedItem", "SelectionChanged")
+                             .ApplyBinding = (viewModelType, path, property, element, convention) =>
+                                 {
+                                     if (
+                                         ConventionManager.GetElementConvention(typeof(ItemsControl))
+                                                          .ApplyBinding(
+                                                              viewModelType, path, property, element, convention))
+                                     {
+                                         ConventionManager.ConfigureSelectedItem(
+                                             element, Pivot.SelectedItemProperty, viewModelType, path);
+                                         ConventionManager.ApplyHeaderTemplate(
+                                             element, Pivot.HeaderTemplateProperty, null, viewModelType);
+                                         return true;
+                                     }
 
-                   return false;
-               };
+                                     return false;
+                                 };
 
-           ConventionManager.AddElementConvention<Panorama>(Panorama.ItemsSourceProperty, "SelectedItem", "SelectionChanged").ApplyBinding =
+            ConventionManager.AddElementConvention<Panorama>(
+                Panorama.ItemsSourceProperty, "SelectedItem", "SelectionChanged").ApplyBinding =
                 (viewModelType, path, property, element, convention) =>
-                {
-                    if (ConventionManager
-                        .GetElementConvention(typeof(ItemsControl))
-                        .ApplyBinding(viewModelType, path, property, element, convention))
                     {
-                        ConventionManager
-                            .ConfigureSelectedItem(element, Panorama.SelectedItemProperty, viewModelType, path);
-                        ConventionManager
-                            .ApplyHeaderTemplate(element, Panorama.HeaderTemplateProperty, null, viewModelType);
-                        return true;
-                    }
+                        if (ConventionManager.GetElementConvention(typeof(ItemsControl))
+                                             .ApplyBinding(viewModelType, path, property, element, convention))
+                        {
+                            ConventionManager.ConfigureSelectedItem(
+                                element, Panorama.SelectedItemProperty, viewModelType, path);
+                            ConventionManager.ApplyHeaderTemplate(
+                                element, Panorama.HeaderTemplateProperty, null, viewModelType);
+                            return true;
+                        }
 
-                    return false;
-                };
+                        return false;
+                    };
         }
 
         private void RootFrameNavigated(object sender, NavigationEventArgs e)

@@ -9,17 +9,11 @@
     /// </summary>
     public abstract class ConductorViewModel : Conductor<ContentScreenViewModel>.Collection.OneActive
     {
-        #region Variables
+        private bool _isBusy;
 
-        private bool isBusy;
+        private string _busyText;
 
-        private string busyText;
-
-        private bool initializationExecuted;
-
-        #endregion // Variables
-
-        #region Properties
+        private bool _initializationExecuted;
 
         /// <summary>
         /// Gets or sets a value indicating whether the ViewModel is busy like initializing or searching.
@@ -28,17 +22,17 @@
         {
             get
             {
-                return this.isBusy;
+                return this._isBusy;
             }
 
             set
             {
-                if (value.Equals(this.isBusy))
+                if (value.Equals(this._isBusy))
                 {
                     return;
                 }
 
-                this.isBusy = value;
+                this._isBusy = value;
                 this.NotifyOfPropertyChange(() => this.IsBusy);
             }
         }
@@ -50,28 +44,24 @@
         {
             get
             {
-                return this.busyText;
+                return this._busyText;
             }
 
             set
             {
-                if (value == this.busyText)
+                if (value == this._busyText)
                 {
                     return;
                 }
 
-                this.busyText = value;
+                this._busyText = value;
                 this.NotifyOfPropertyChange(() => this.BusyText);
             }
         }
 
-        #endregion
-
-        #region Lifecycle events
-
         protected override void OnInitialize()
         {
-            if (!this.initializationExecuted)
+            if (!this._initializationExecuted)
             {
                 this.ExecuteInitialization();
             }
@@ -79,11 +69,9 @@
             base.OnInitialize();
         }
 
-        #endregion // Lifecyce events
-
         protected virtual async void ExecuteInitialization()
         {
-            this.initializationExecuted = true;
+            this._initializationExecuted = true;
         }
 
         public virtual async Task LoadDataAsync()
@@ -104,10 +92,7 @@
             await this.ActiveItem.LoadContentAsync();
 
             this.IsBusy = false;
-            this.BusyText = string.Empty; 
+            this.BusyText = string.Empty;
         }
     }
 }
-
-
-

@@ -70,6 +70,15 @@ namespace Knet.Phone.Client.ArcGIS {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to http://www.arcgis.com/sharing/rest/generateToken.
+        /// </summary>
+        internal static string ArcGISPortalGenerateTokenUrl {
+            get {
+                return ResourceManager.GetString("ArcGISPortalGenerateTokenUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to https://www.arcgis.com/sharing/rest/.
         /// </summary>
         internal static string ArcGISPortalUrl {

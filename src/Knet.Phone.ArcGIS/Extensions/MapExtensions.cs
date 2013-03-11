@@ -7,7 +7,6 @@
 
     public class MapExtensions : DependencyObject
     {
-
         #region Extent
 
         /// <summary>
@@ -41,7 +40,8 @@
         /// </summary>
         /// <param name="dependencyObject">The map.</param>
         /// <param name="dependencyPropertyChangedEventArgs">Value arguments.</param>
-        private static async void PropertyChangedCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        private static async void PropertyChangedCallback(
+            DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
             var map = dependencyObject as Map;
             if (map == null)
@@ -58,7 +58,7 @@
 
             // If spatial reference differs, reproject it.
             if (newExtent.SpatialReference != map.SpatialReference)
-            {               
+            {
                 var projectedExtent = await GeometryServiceExtensions.ProjectAsync(newExtent, map.SpatialReference);
                 map.ZoomTo(projectedExtent as Envelope);
             }
@@ -67,6 +67,7 @@
                 map.Extent = newExtent;
             }
         }
+
         #endregion // Extent
     }
 }

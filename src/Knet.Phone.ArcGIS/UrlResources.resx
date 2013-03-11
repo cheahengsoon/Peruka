@@ -125,4 +125,8 @@
     <value>https://www.arcgis.com/sharing/rest/</value>
     <comment>Default url to ArcGIS Online REST API endpoint.</comment>
   </data>
+  <data name="ArcGISPortalGenerateTokenUrl" xml:space="preserve">
+    <value>http://www.arcgis.com/sharing/rest/generateToken</value>
+    <comment>Url to generateToken REST endpoint.</comment>
+  </data>
 </root>

@@ -18,14 +18,11 @@
         /// </returns>
         public static Graphic Create(GeoCoordinate location)
         {
-              var graphic = new Graphic();
-              var point = new MapPoint(
-                  location.Longitude,
-                  location.Latitude, 
-                  new SpatialReference(4326));
+            var graphic = new Graphic();
+            var point = new MapPoint(location.Longitude, location.Latitude, new SpatialReference(4326));
 
-              graphic.Geometry = point;
-              return graphic;
+            graphic.Geometry = point;
+            return graphic;
         }
     }
 }

@@ -18,18 +18,16 @@
 
     public class PortalService : PropertyChangedBase
     {
-        private readonly ArcGISPortal portal;
+        private readonly ArcGISPortal _portal;
 
-        private IdentityManager.Credential credentials;
+        private IdentityManager.Credential _credentials;
 
-        private ArcGISPortalUser userInformation;
+        private ArcGISPortalUser _userInformation;
 
         public PortalService()
         {
-            this.portal = new ArcGISPortal();
+            _portal = new ArcGISPortal();
         }
-
-        #region Properties
 
         /// <summary>
         /// Gets the users information
@@ -38,22 +36,20 @@
         {
             get
             {
-                return this.userInformation;
+                return _userInformation;
             }
 
             private set
             {
-                if (Equals(value, this.userInformation))
+                if (Equals(value, _userInformation))
                 {
                     return;
                 }
 
-                this.userInformation = value;
-                this.NotifyOfPropertyChange(() => this.UserInformation);
+                _userInformation = value;
+                NotifyOfPropertyChange(() => UserInformation);
             }
         }
-
-        #endregion // Properties
 
         /// <summary>
         /// Initializes the portal.
@@ -61,7 +57,7 @@
         public async Task InitializeAsync(string username, string password)
         {
             // If already initialized, dont do anything
-            if (this.portal.IsInitialized)
+            if (_portal.IsInitialized)
             {
                 return;
             }
@@ -72,8 +68,8 @@
 
                 if (credential != null)
                 {
-                    this.credentials = credential;
-                    this.StartTokenRefresh();
+                    _credentials = credential;
+                    StartTokenRefresh();
                 }
             }
             catch (Exception ex)
@@ -83,8 +79,8 @@
                 throw;
             }
 
-            await this.portal.InitializeAsync();
-            this.UserInformation = this.portal.CurrentUser;
+            await _portal.InitializeAsync();
+            UserInformation = _portal.CurrentUser;
         }
 
         public async Task<IEnumerable<ArcGISPortalItem>> LoadBasemapGalleryAsync(int limit = 10)
@@ -92,7 +88,7 @@
             var parameters = new SearchParameters() { Limit = limit };
 
             // Load ArcGISPortalItems from the Online that contains basemaps.
-            var items = await this.portal.LoadBasemapGalleryAsync(parameters);
+            var items = await _portal.LoadBasemapGalleryAsync(parameters);
 
             // Filter away Bing maps since we don't have a token.
             return items.Where(l => !l.Name.Contains("Bing"));
@@ -105,12 +101,9 @@
         /// <returns>Returns items that were found./></returns>
         public async Task<IEnumerable<ArcGISPortalItem>> GetItemsAsync(string query)
         {
-            var parameters = new SearchParameters
-            {
-                QueryString = query
-            };
+            var parameters = new SearchParameters { QueryString = query };
 
-            return await this.portal.SearchItemsAsync(parameters);
+            return await _portal.SearchItemsAsync(parameters);
         }
 
         public async Task<GetMapCompletedEventArgs> LoadWebmapByIdAsync(string id)
@@ -119,7 +112,7 @@
 
             try
             {
-                webMapDocument.Token = this.credentials.Token;
+                webMapDocument.Token = _credentials.Token;
                 return await webMapDocument.LoadWebMapAsync(id);
             }
             catch (Exception)
@@ -130,22 +123,25 @@
 
         public async Task<IEnumerable<ArcGISPortalItem>> GetNewestOrganizationalItemsAsync(int limit)
         {
-            if (!this.portal.IsInitialized)
+            if (! _portal.IsInitialized)
             {
                 return null;
             }
 
             var parameters = new SearchParameters
-            {
-                Limit = limit,
-                QueryString = string.Format("accountid:\"{0}\" AND type:\"Web Map\" AND -type:\"Web Mapping Application\"", this.UserInformation.OrgId),
-                SortField = "modified",
-                SortOrder = QuerySortOrder.Descending
-            };
+                                 {
+                                     Limit = limit,
+                                     QueryString =
+                                         string.Format(
+                                             "accountid:\"{0}\" AND type:\"Web Map\" AND -type:\"Web Mapping Application\"",
+                                             UserInformation.OrgId),
+                                     SortField = "modified",
+                                     SortOrder = QuerySortOrder.Descending
+                                 };
 
             try
             {
-                return await this.portal.SearchItemsAsync(parameters);
+                return await _portal.SearchItemsAsync(parameters);
             }
             catch (Exception exception)
             {
@@ -155,22 +151,25 @@
 
         public async Task<IEnumerable<ArcGISPortalItem>> GetMostUsedWebMapsFromOrganizationAsync(int limit)
         {
-            if (!this.portal.IsInitialized)
+            if (! _portal.IsInitialized)
             {
                 return null;
             }
 
             var parameters = new SearchParameters
-            {
-                Limit = limit,
-                QueryString = string.Format("accountid:\"{0}\" AND type:\"Web Map\" AND -type:\"Web Mapping Application\"", this.UserInformation.OrgId),
-                SortField = "numviews",
-                SortOrder = QuerySortOrder.Descending
-            };
+                                 {
+                                     Limit = limit,
+                                     QueryString =
+                                         string.Format(
+                                             "accountid:\"{0}\" AND type:\"Web Map\" AND -type:\"Web Mapping Application\"",
+                                             UserInformation.OrgId),
+                                     SortField = "numviews",
+                                     SortOrder = QuerySortOrder.Descending
+                                 };
 
             try
             {
-                return await this.portal.SearchItemsAsync(parameters);
+                return await _portal.SearchItemsAsync(parameters);
             }
             catch (Exception exception)
             {
@@ -181,16 +180,18 @@
         public async Task<IEnumerable<ArcGISPortalItem>> GetFeaturedWebMapsAsync(int limit)
         {
             var parameters = new SearchParameters
-            {
-                Limit = limit,
-                QueryString = string.Format("type:\"Web Map\" AND -type:\"Web Mapping Application\""),
-                SortField = "modified",
-                SortOrder = QuerySortOrder.Descending
-            };
+                                 {
+                                     Limit = limit,
+                                     QueryString =
+                                         string.Format(
+                                             "type:\"Web Map\" AND -type:\"Web Mapping Application\""),
+                                     SortField = "modified",
+                                     SortOrder = QuerySortOrder.Descending
+                                 };
 
             try
             {
-                return await this.portal.ArcGISPortalInfo.SearchFeaturedItemsAsync(parameters);
+                return await _portal.ArcGISPortalInfo.SearchFeaturedItemsAsync(parameters);
             }
             catch (Exception exception)
             {
@@ -203,7 +204,7 @@
         /// </summary>
         private void StartTokenRefresh()
         {
-            this.credentials.PropertyChanged += this.HandleTokenRefreshed;
+            _credentials.PropertyChanged += HandleTokenRefreshed;
         }
 
         /// <summary>
@@ -211,7 +212,7 @@
         /// </summary>
         private void StopTokenRefresh()
         {
-            this.credentials.PropertyChanged -= this.HandleTokenRefreshed;
+            _credentials.PropertyChanged -= HandleTokenRefreshed;
         }
 
         /// <summary>
@@ -223,9 +224,9 @@
         {
             if (args.PropertyName == "Token")
             {
-                if (this.credentials.Token != null)
+                if (_credentials.Token != null)
                 {
-                    this.portal.Token = this.credentials.Token;
+                    _portal.Token = _credentials.Token;
                 }
             }
         }

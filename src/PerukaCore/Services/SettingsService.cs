@@ -4,15 +4,21 @@
 
     using Knet.Phone.Client.SettingsStore;
 
-    public class SettingsService : IsolatedSettingsStore 
+    public class SettingsService : IsolatedSettingsStore
     {
         /// <summary>
         /// Gets or sets the username.
         /// </summary>
         public string Username
         {
-            get { return this.GetValueOrDefault(string.Empty); }
-            set { this.AddOrUpdateValue(value); }
+            get
+            {
+                return GetValueOrDefault(string.Empty);
+            }
+            set
+            {
+                AddOrUpdateValue(value);
+            }
         }
 
         /// <summary>
@@ -23,17 +29,29 @@
         /// </remarks>
         public string Password
         {
-            get { return this.GetValueOrDefault(string.Empty); }
-            set { this.AddOrUpdateValue(value); }
+            get
+            {
+                return GetValueOrDefault(string.Empty);
+            }
+            set
+            {
+                AddOrUpdateValue(value);
+            }
         }
 
         /// <summary>
         /// Gets or sets a value indicating whether using location is allowed.
         /// </summary>
-        public bool IsLocationServiceAllowed 
+        public bool IsLocationServiceAllowed
         {
-            get { return this.GetValueOrDefault(true); }
-            set { this.AddOrUpdateValue(value); } 
+            get
+            {
+                return GetValueOrDefault(true);
+            }
+            set
+            {
+                AddOrUpdateValue(value);
+            }
         }
 
         /// <summary>
@@ -41,8 +59,14 @@
         /// </summary>
         public GeoPositionAccuracy PositionAccuracy
         {
-            get { return this.GetValueOrDefault(GeoPositionAccuracy.High); }
-            set { this.AddOrUpdateValue(value); } 
+            get
+            {
+                return GetValueOrDefault(GeoPositionAccuracy.High);
+            }
+            set
+            {
+                AddOrUpdateValue(value);
+            }
         }
     }
 }

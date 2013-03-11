@@ -24,11 +24,11 @@ namespace Peruka.Phone.Client.Core.Services
 
         public override void HandlePostionChanged(GeoPosition<GeoCoordinate> coordinate)
         {
-            var route = RouteFactory.Create(coordinate, this.SettingsService.Username);
+            var route = RouteFactory.Create(coordinate,  SettingsService.Username);
 
             var addRouteParameters = new AddFeatureParameters();
-            addRouteParameters.Graphics.Add(route);
-
+            addRouteParameters.AddGraphics.Add(route);
+ 
             var addRoutePointTask = new AddFeatureTask(ServiceUrl);
             addRoutePointTask.ExecuteAsync(addRouteParameters);
         }

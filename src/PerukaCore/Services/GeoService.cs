@@ -6,123 +6,105 @@
 
     using Caliburn.Micro;
 
-
-    // TODO : initialization handling
-    // TODO : create baseclass
     public abstract class GeoService : PropertyChangedBase
     {
-        #region Variables
+        private GeoCoordinateWatcher _coordinateWatcher;
 
-        private GeoCoordinateWatcher coordinateWatcher;
-
-        private bool isInitialized;
-
-        #endregion // Variables
-
-        #region Constructor
+        private bool _isInitialized;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GeoService"/> class. 
+        ///     Initializes a new instance of the <see cref="GeoService" /> class.
         /// </summary>
         /// <param name="settingsService">
-        /// The settings service
+        ///     The settings service
         /// </param>
         protected GeoService(SettingsService settingsService)
         {
-            this.SettingsService = settingsService;
+            SettingsService = settingsService;
         }
 
-        #endregion // Constructor
-
-        #region Properties
-
         /// <summary>
-        /// Gets or sets the <see cref="GeoCoordinateWatcher"/>
+        ///     Gets or sets the <see cref="GeoCoordinateWatcher" />
         /// </summary>
         public GeoCoordinateWatcher CoordinateWatcher
         {
             get
             {
-                return this.coordinateWatcher;
+                return _coordinateWatcher;
             }
 
             set
             {
-                if (Equals(value, this.coordinateWatcher))
+                if (Equals(value, _coordinateWatcher))
                 {
                     return;
                 }
-                this.coordinateWatcher = value;
-                this.NotifyOfPropertyChange(() => this.CoordinateWatcher);
+                _coordinateWatcher = value;
+                NotifyOfPropertyChange(() => CoordinateWatcher);
             }
         }
 
         protected SettingsService SettingsService { get; private set; }
 
-        #endregion // Properties
-
         /// <summary>
-        /// Gets a value indicating whether the service is initialized.
+        ///     Gets a value indicating whether the service is initialized.
         /// </summary>
         public bool IsInitialized
         {
             get
             {
-                return this.isInitialized;
+                return this._isInitialized;
             }
 
             private set
             {
-                if (value.Equals(this.isInitialized))
+                if (value.Equals(_isInitialized))
                 {
                     return;
                 }
-                this.isInitialized = value;
-                this.NotifyOfPropertyChange(() => this.IsInitialized);
+                _isInitialized = value;
+                NotifyOfPropertyChange(() => IsInitialized);
             }
         }
 
-        public async virtual Task InitializeAsync()
+        public virtual async Task InitializeAsync()
         {
-            if (!this.SettingsService.IsLocationServiceAllowed)
+            if (!SettingsService.IsLocationServiceAllowed)
             {
                 return;
             }
 
-            if (this.CoordinateWatcher != null)
+            if (CoordinateWatcher != null)
             {
                 return;
             }
 
             // TODO handle MovementTreshhold some how...
-            this.CoordinateWatcher = new GeoCoordinateWatcher(this.SettingsService.PositionAccuracy) { MovementThreshold = 5 };
-            this.CoordinateWatcher.StatusChanged += this.CoordinateWatcherOnStatusChanged;
-            this.CoordinateWatcher.PositionChanged += this.PositionChanged;
+            CoordinateWatcher = new GeoCoordinateWatcher(SettingsService.PositionAccuracy) { MovementThreshold = 5 };
+            CoordinateWatcher.StatusChanged += CoordinateWatcherOnStatusChanged;
+            CoordinateWatcher.PositionChanged += PositionChanged;
+
+            IsInitialized = true;
         }
 
         public void Start()
         {
-            this.CoordinateWatcher.Start();
+            CoordinateWatcher.Start();
             Debug.WriteLine("GeoCoordinateWather started.");
         }
 
         public void Stop()
         {
-            this.CoordinateWatcher.Stop();
+            CoordinateWatcher.Stop();
             Debug.WriteLine("GeoCoordinateWather stopped.");
         }
 
         /// <summary>
-        /// Override when want to handle 
+        ///     Override when want to handle
         /// </summary>
         /// <param name="coordinate"></param>
         public abstract void HandlePostionChanged(GeoPosition<GeoCoordinate> coordinate);
 
-        /// <summary>
-        /// <see cref="GeoCoordinateWatcher"/>s status changed handler.
-        /// </summary>
-        /// <param name="sender">The <see cref="GeoCoordinateWatcher"/></param>
-        /// <param name="statusEventArgs">Event arguments</param>
         private void CoordinateWatcherOnStatusChanged(object sender, GeoPositionStatusChangedEventArgs statusEventArgs)
         {
             // TODO handle
@@ -143,23 +125,14 @@
             }
         }
 
-        /// <summary>
-        /// <see cref="GeoCoordinateWatcher"/>s position changed handler.
-        /// </summary>
-        /// <param name="sender">
-        /// The <see cref="GeoCoordinateWatcher"/>
-        /// </param>
-        /// <param name="e">
-        /// The <see cref="GeoPositionChangedEventArgs{GeoCoordinate}"/>
-        /// </param>
         private void PositionChanged(object sender, GeoPositionChangedEventArgs<GeoCoordinate> e)
         {
-            if (this.coordinateWatcher.Status != GeoPositionStatus.Ready)
+            if (_coordinateWatcher.Status != GeoPositionStatus.Ready)
             {
                 return;
             }
 
-            this.HandlePostionChanged(e.Position);
+            HandlePostionChanged(e.Position);
         }
     }
 }

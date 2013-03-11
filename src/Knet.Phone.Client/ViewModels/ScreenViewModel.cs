@@ -4,17 +4,11 @@
 
     public abstract class ScreenViewModel : Screen
     {
-        #region Variables
+        private bool _isBusy;
 
-        private bool isBusy;
+        private string _busyText;
 
-        private string busyText;
-
-        private bool backNavSkipOne;
-
-        #endregion // Variables
-
-        #region Properties
+        private bool _backNavSkipOne;
 
         /// <summary>
         /// Gets or sets a value indicating whether the ViewModel is busy like initializing or searching.
@@ -23,17 +17,17 @@
         {
             get
             {
-                return this.isBusy;
+                return this._isBusy;
             }
 
             set
             {
-                if (value.Equals(this.isBusy))
+                if (value.Equals(this._isBusy))
                 {
                     return;
                 }
 
-                this.isBusy = value;
+                this._isBusy = value;
                 this.NotifyOfPropertyChange(() => this.IsBusy);
             }
         }
@@ -45,17 +39,17 @@
         {
             get
             {
-                return this.busyText;
+                return this._busyText;
             }
 
             set
             {
-                if (value == this.busyText)
+                if (value == this._busyText)
                 {
                     return;
                 }
 
-                this.busyText = value;
+                this._busyText = value;
                 this.NotifyOfPropertyChange(() => this.BusyText);
             }
         }
@@ -73,20 +67,18 @@
         {
             get
             {
-                return this.backNavSkipOne;
+                return this._backNavSkipOne;
             }
 
             set
             {
-                if (value.Equals(this.backNavSkipOne))
+                if (value.Equals(this._backNavSkipOne))
                 {
                     return;
                 }
-                this.backNavSkipOne = value;
+                this._backNavSkipOne = value;
                 this.NotifyOfPropertyChange(() => this.BackNavSkipOne);
             }
         }
-
-        #endregion
     }
 }

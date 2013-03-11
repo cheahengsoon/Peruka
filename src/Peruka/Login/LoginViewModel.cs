@@ -12,39 +12,28 @@
 
     public class LoginViewModel : ScreenViewModel
     {
-        #region Variables
+        private readonly INavigationService _navigationService;
 
-        private readonly INavigationService navigationService;
-        private readonly PortalService portalService;
-        private readonly SettingsService settingsService; 
+        private readonly PortalService _portalService;
 
-        private PasswordBox passwordBox;
+        private readonly SettingsService _settingsService;
 
-        private string username;
-        private bool canLogin;
-        private string errorMessage;
-        private bool rememberMe;
+        private bool _canLogin;
 
-        #endregion // Variables
+        private string _errorMessage;
 
-        #region Constructor
+        private PasswordBox _passwordBox;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LoginViewModel"/> class. 
-        /// </summary>
-        /// <param name="navigationService">
-        /// The navigation service
-        /// </param>
-        /// <param name="portalService">
-        /// The portal service
-        /// </param>
-        /// <param name="settingsService">
-        /// The settings service</param>
-        public LoginViewModel(INavigationService navigationService, PortalService portalService, SettingsService settingsService)
+        private bool _rememberMe;
+
+        private string _username;
+
+        public LoginViewModel(
+            INavigationService navigationService, PortalService portalService, SettingsService settingsService)
         {
-            this.navigationService = navigationService;
-            this.portalService = portalService;
-            this.settingsService = settingsService;
+            _navigationService = navigationService;
+            _portalService = portalService;
+            _settingsService = settingsService;
 
             // Set default values
             this.Username = "kajanus_demo";
@@ -53,180 +42,140 @@
             this.RememberMe = true;
         }
 
-        #endregion // Constructor
-
-        #region Properties
-
-        /// <summary>
-        /// Gets or sets the username.
-        /// </summary>
-        public string Username
-        {
-            get
-            {
-                return this.username;
-            }
-
-            set
-            {
-                if (value.Equals(this.username))
-                {
-                    return;
-                }
-                this.username = value;
-                this.NotifyOfPropertyChange(() => this.Username);
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the user can execute Login process.
-        /// </summary>
-        public bool CanLogin
-        {
-            get
-            {
-                return this.canLogin;
-            }
-
-            set
-            {
-                if (value.Equals(this.canLogin))
-                {
-                    return;
-                }
-
-                this.canLogin = value;
-                this.NotifyOfPropertyChange(() => this.CanLogin);
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the error message.
-        /// </summary>
         public string ErrorMessage
         {
             get
             {
-                return this.errorMessage;
+                return this._errorMessage;
             }
 
             set
             {
-                if (value.Equals(this.errorMessage))
+                if (value.Equals(this._errorMessage))
                 {
                     return;
                 }
 
-                this.errorMessage = value;
+                this._errorMessage = value;
                 this.NotifyOfPropertyChange(() => this.ErrorMessage);
             }
         }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether the account should be stored. 
-        /// </summary>
-        public bool RememberMe
+        public bool CanLogin
         {
             get
             {
-                return this.rememberMe;
+                return this._canLogin;
             }
 
             set
             {
-                if (value.Equals(this.rememberMe))
+                if (value.Equals(this._canLogin))
                 {
                     return;
                 }
-                this.rememberMe = value;
+
+                this._canLogin = value;
+                this.NotifyOfPropertyChange(() => this.CanLogin);
+            }
+        }
+
+        public bool RememberMe
+        {
+            get
+            {
+                return this._rememberMe;
+            }
+
+            set
+            {
+                if (value.Equals(this._rememberMe))
+                {
+                    return;
+                }
+
+                this._rememberMe = value;
                 this.NotifyOfPropertyChange(() => this.RememberMe);
             }
         }
 
-        #endregion // Properties
+        public string Username
+        {
+            get
+            {
+                return this._username;
+            }
 
-        #region Commanding methods
+            set
+            {
+                if (value.Equals(this._username))
+                {
+                    return;
+                }
 
-        /// <summary>
-        /// Logs user into the application with given credentials.
-        /// </summary>
+                this._username = value;
+                this.NotifyOfPropertyChange(() => this.Username);
+            }
+        }
+
         public void Login()
         {
             this.IsBusy = true;
             this.ErrorMessage = string.Empty;
             this.CanLogin = false;
 
-            this.LoginAndNavigateAsync(this.passwordBox.Password);
+            this.LoginAndNavigateAsync(this._passwordBox.Password);
         }
 
-        #endregion // Commanding methods
-
-        #region Lifecycle
-
-        /// <summary>
-        /// Executed when the view model is activated.
-        /// </summary>
         protected override void OnActivate()
         {
-            if (!string.IsNullOrEmpty(this.settingsService.Username))
+            if (!string.IsNullOrEmpty(this._settingsService.Username))
             {
-                this.Username = this.settingsService.Username;
+                this.Username = this._settingsService.Username;
             }
 
             // If both username and password are stored login directly  
-            if (!string.IsNullOrEmpty(this.Username)
-                && !string.IsNullOrEmpty(this.settingsService.Password))
+            if (!string.IsNullOrEmpty(this.Username) && !string.IsNullOrEmpty(this._settingsService.Password))
             {
-                this.LoginAndNavigateAsync(this.settingsService.Password);
+                this.LoginAndNavigateAsync(this._settingsService.Password);
             }
 
             base.OnActivate();
         }
 
         /// <summary>
-        /// Executed when the view is loaded. This violates the MVVM pattern, but is used to keep password secured.
+        ///     Executed when the view is loaded. This violates the MVVM pattern, but is used to keep password secured.
         /// </summary>
-        /// <param name="view">The view.</param>
         protected override void OnViewLoaded(object view)
         {
-            this.passwordBox = (view as LoginView).PasswordBox;
-            
-            if (!string.IsNullOrEmpty(this.settingsService.Password))
+            this._passwordBox = (view as LoginView).PasswordBox;
+
+            if (!string.IsNullOrEmpty(this._settingsService.Password))
             {
-                this.passwordBox.Password = this.settingsService.Password;
+                this._passwordBox.Password = this._settingsService.Password;
             }
 
             base.OnViewLoaded(view);
         }
 
-        #endregion // Lifecycle
-
-        #region Async methods
-
-        /// <summary>
-        /// Executes login and navigates to the next view if it was completed.
-        /// </summary>
-        /// <param name="password">
-        /// The password.
-        /// </param>
         private async void LoginAndNavigateAsync(string password)
         {
             try
             {
                 // Generates token for the user and then naviates to the main view
-                await this.portalService.InitializeAsync(this.Username, password);
+                await this._portalService.InitializeAsync(this.Username, password);
 
                 // Store username for later use.
-                this.settingsService.Username = this.Username;
+                this._settingsService.Username = this.Username;
 
                 // Store password if set so.
                 if (this.RememberMe)
                 {
-                    this.settingsService.Password = password;
+                    this._settingsService.Password = password;
                 }
 
                 this.IsBusy = false;
-                this.navigationService.UriFor<TrackRouteViewModel>().WithParam(p => p.BackNavSkipOne, true).Navigate();
+                this._navigationService.UriFor<TrackRouteViewModel>().WithParam(p => p.BackNavSkipOne, true).Navigate();
             }
             catch (Exception exception)
             {
@@ -235,7 +184,5 @@
                 this.CanLogin = true;
             }
         }
-
-        #endregion // Async methods
     }
 }

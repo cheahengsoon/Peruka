@@ -6,24 +6,24 @@
 
     public class TrackRouteViewModel : ScreenViewModel
     {
-        private RouteService routeService;
+        private readonly RouteService _routeService;
 
         public TrackRouteViewModel(RouteService routeService)
         {
-            this.routeService = routeService;
-            this.routeService.InitializeAsync();
+            _routeService = routeService;
+            _routeService.InitializeAsync();
         }
 
         #region Commanding methods
 
         public void StartTracking()
         {
-            this.routeService.Start();
+            _routeService.Start();
         }
 
         public void StopTracking()
         {
-            this.routeService.Stop();
+            _routeService.Stop();
         }
 
         #endregion

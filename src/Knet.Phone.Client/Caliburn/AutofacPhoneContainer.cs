@@ -9,11 +9,11 @@
 
     public class AutofacPhoneContainer : IPhoneContainer
     {
-        private readonly IComponentContext context;
+        private readonly IComponentContext _context;
 
         public AutofacPhoneContainer(IComponentContext context)
         {
-            this.context = context;
+            this._context = context;
         }
 
         public event Action<object> Activated;
@@ -22,23 +22,24 @@
         {
             if (!IsolatedStorageSettings.ApplicationSettings.Contains(appSettingsKey ?? service.FullName))
             {
-                IsolatedStorageSettings.ApplicationSettings[appSettingsKey ?? service.FullName] = this.context.Resolve(implementation);
+                IsolatedStorageSettings.ApplicationSettings[appSettingsKey ?? service.FullName] =
+                    this._context.Resolve(implementation);
             }
 
             var builder = new ContainerBuilder();
 
-            builder.Register(c =>
-            {
-                if (IsolatedStorageSettings.ApplicationSettings.Contains(appSettingsKey ?? service.FullName))
-                {
-                    return IsolatedStorageSettings.ApplicationSettings[appSettingsKey ?? service.FullName];
-                }
+            builder.Register(
+                c =>
+                    {
+                        if (IsolatedStorageSettings.ApplicationSettings.Contains(appSettingsKey ?? service.FullName))
+                        {
+                            return IsolatedStorageSettings.ApplicationSettings[appSettingsKey ?? service.FullName];
+                        }
 
-                return c.Resolve(implementation);
-            }).Named(appSettingsKey, service)
-            .OnActivated(args => this.OnActivated(args.Instance));
+                        return c.Resolve(implementation);
+                    }).Named(appSettingsKey, service).OnActivated(args => this.OnActivated(args.Instance));
 
-            builder.Update(this.context.ComponentRegistry);
+            builder.Update(this._context.ComponentRegistry);
         }
 
         public void RegisterWithPhoneService(Type service, string phoneStateKey, Type implementation)
@@ -47,30 +48,30 @@
 
             if (!pservice.State.ContainsKey(phoneStateKey ?? service.FullName))
             {
-                pservice.State[phoneStateKey ?? service.FullName] = this.context.Resolve(implementation);
+                pservice.State[phoneStateKey ?? service.FullName] = this._context.Resolve(implementation);
             }
 
             var builder = new ContainerBuilder();
 
-            builder.Register(c =>
-            {
-                var phoneService = c.Resolve<IPhoneService>();
+            builder.Register(
+                c =>
+                    {
+                        var phoneService = c.Resolve<IPhoneService>();
 
-                if (phoneService.State.ContainsKey(phoneStateKey ?? service.FullName))
-                {
-                    return phoneService.State[phoneStateKey ?? service.FullName];
-                }
+                        if (phoneService.State.ContainsKey(phoneStateKey ?? service.FullName))
+                        {
+                            return phoneService.State[phoneStateKey ?? service.FullName];
+                        }
 
-                return c.Resolve(implementation);
-            }).Named(phoneStateKey, service)
-            .OnActivated(args => this.OnActivated(args.Instance));
+                        return c.Resolve(implementation);
+                    }).Named(phoneStateKey, service).OnActivated(args => this.OnActivated(args.Instance));
 
-            builder.Update(this.context.ComponentRegistry);
+            builder.Update(this._context.ComponentRegistry);
         }
 
         private object GetInstance(Type service, string key)
         {
-            return string.IsNullOrEmpty(key) ? this.context.Resolve(service) : this.context.ResolveNamed(key, service);
+            return string.IsNullOrEmpty(key) ? this._context.Resolve(service) : this._context.ResolveNamed(key, service);
         }
 
         private void OnActivated(object instance)
