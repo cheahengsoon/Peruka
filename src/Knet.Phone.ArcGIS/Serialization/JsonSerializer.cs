@@ -12,7 +12,7 @@
         /// </summary>
         /// <param name="objectToSerialize">Object to serialize.</param>
         /// <returns>Serialized object.</returns>
-        public static string ConvertObjectToJsonString(object objectToSerialize)
+        public static string SerializeObject(object objectToSerialize)
         {
             return JsonConvert.SerializeObject(objectToSerialize);
         }
@@ -23,7 +23,7 @@
         /// <typeparam name="T">Target object type</typeparam>
         /// <param name="stringToDeserialize">JSON to deserialize.</param>
         /// <returns>Deserialized object as a target type.</returns>
-        public static T ConvertJsonStringToObject<T>(string stringToDeserialize)
+        public static T DeserializeObject<T>(string stringToDeserialize)
         {
             return JsonConvert.DeserializeObject<T>(stringToDeserialize);
         }

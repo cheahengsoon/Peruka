@@ -8,8 +8,11 @@
     public abstract class TaskResultsBase<TResult>
         where TResult : new()
     {
-        public Exception Error { get; set; }
+        [JsonProperty("error")]
+        public TaskError TaskError { get; set; }
 
+        public Exception Error { get; set; }
+        
         public static TResult Create(string json)
         {
             return JsonConvert.DeserializeObject<TResult>(json);

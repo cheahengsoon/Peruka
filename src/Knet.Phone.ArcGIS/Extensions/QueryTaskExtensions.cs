@@ -10,8 +10,8 @@
         {
             var tcs = new TaskCompletionSource<QueryEventArgs>();
 
-            task.ExecuteCompleted += (sender, e) => { tcs.SetResult(e); };
-            task.Failed += (sender, args) => { tcs.SetException(args.Error); };
+            task.ExecuteCompleted += (sender, e) => tcs.SetResult(e);
+            task.Failed += (sender, args) => tcs.SetException(args.Error);
 
             task.ExecuteAsync(query);
             return tcs.Task;

@@ -50,7 +50,7 @@
         /// <returns>Returns <see cref="Task"/></returns>
         public async Task LoadContentAsync()
         {
-            throw new System.NotImplementedException();
+            IsContentLoaded = true;
         }
     }
 }

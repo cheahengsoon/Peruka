@@ -6,6 +6,8 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:converters="clr-namespace:Knet.Phone.Client.Converters;assembly=Knet.Phone.Client"
+    xmlns:cal="clr-namespace:Caliburn.Micro;assembly=Caliburn.Micro"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
@@ -16,65 +18,57 @@
 
     <!-- Tray content -->
     <shell:SystemTray.ProgressIndicator>
-        <shell:ProgressIndicator IsIndeterminate="{Binding IsBusy}" 
-                                 IsVisible="{Binding IsBusy}" 
+        <shell:ProgressIndicator IsIndeterminate="{Binding IsBusy}"
+                                 IsVisible="{Binding IsBusy}"
                                  Text="{Binding BusyText}" />
     </shell:SystemTray.ProgressIndicator>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-        </Grid.RowDefinitions>
-        <!-- Background -->
-        <Image Source="..\Assets\Backgrounds\Peruka.png" 
-               Stretch="UniformToFill"
-               Grid.RowSpan="2" Opacity="0.5"/>
-        
-        <!-- Header -->
-        <StackPanel>
-            <StackPanel 
-                Margin="20, 25, 10, 5">
-                <TextBlock Text="Peruka"
-                           FontFamily="Franklin Gothic Medium"
-                           Style="{StaticResource PhoneTextTitle2Style}"
-                           FontWeight="Bold"/>
-                <TextBlock Text="Track your routes"
-                           FontFamily="Franklin Gothic Medium"
-                           Style="{StaticResource PhoneTextSmallStyle}"
-                           VerticalAlignment="Bottom"/>
-            </StackPanel>
-        </StackPanel>
+    <phone:PhoneApplicationPage.Resources>
+        <converters:BoolToVisibilityConverter x:Name="BoolToVisibilityConverter" />
 
-        <Grid Grid.Row="1" Margin="12">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"></RowDefinition>
-                <RowDefinition Height="auto"></RowDefinition>
-            </Grid.RowDefinitions>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                </Grid.RowDefinitions>
-              
+        <!-- Template for Panorama views Title -->
+        <DataTemplate x:Key="TitleTemplate">
+            <Grid Margin="0, 50, 10, 5" HorizontalAlignment="Stretch">
+                <StackPanel>
+                    <TextBlock Text="Peruka"
+                               Style="{StaticResource PhoneTextTitle2Style}" />
+                    <TextBlock
+                        Text="Route tracking"
+                        Style="{StaticResource PhoneTextSmallStyle}" />
+                </StackPanel>
             </Grid>
-            <Button 
-                x:Name="StartTracking"
-                Content="Start tracking" 
-                Margin="0,30,0,10" 
-                />
-            <Button 
-                x:Name="StopTracking"
-                Content="Stop tracking" 
-                Grid.Row="1"
-                Margin="0,30,0,10" 
-                />
-        </Grid>
-        
-        
+        </DataTemplate>
+
+        <!-- Template for Panorama item headers -->
+        <DataTemplate x:Key="HeaderTemplate">
+            <TextBlock Text="{Binding DisplayName}" />
+        </DataTemplate>
+    </phone:PhoneApplicationPage.Resources>
+
+    <Grid>
+        <Ellipse Width="20" Height="20" 
+                         Fill="Green" 
+                         HorizontalAlignment="Right" VerticalAlignment="Top"
+                         Margin="10"
+                         Visibility="{Binding RouteService.IsCollecting, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
+        <Ellipse Width="20" Height="20" 
+                         Fill="Red" 
+                         HorizontalAlignment="Right" VerticalAlignment="Top"
+                         Margin="10"
+                         Visibility="{Binding RouteService.IsCollecting, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter= '!', Mode=OneWay}" />
+        <phone:Panorama x:Name="Items"
+                    TitleTemplate="{StaticResource TitleTemplate}"
+                    HeaderTemplate="{StaticResource HeaderTemplate}">
+            <phone:Panorama.Background>
+                <ImageBrush ImageSource="..\Assets\Backgrounds\Peruka.png" Opacity="0.5" Stretch="UniformToFill" />
+            </phone:Panorama.Background>
+        </phone:Panorama>
     </Grid>
+    <phone:PhoneApplicationPage.ApplicationBar>
+        <shell:ApplicationBar IsVisible="True" Mode="Minimized"  Opacity="0.8">
+            <shell:ApplicationBar.Buttons>
+                <cal:AppBarButton IconUri="/Assets/appbar.magnify.png" Text="Search" Message="NavigateToMap" />
+            </shell:ApplicationBar.Buttons>
+        </shell:ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>
 </phone:PhoneApplicationPage>

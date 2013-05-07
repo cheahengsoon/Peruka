@@ -1,0 +1,61 @@
+﻿<UserControl x:Class="Peruka.Phone.Client.Presentation.TrackRoute.Details.RouteDetailsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             FontFamily="{StaticResource PhoneFontFamilyNormal}"
+             FontSize="{StaticResource PhoneFontSizeNormal}"
+             Foreground="{StaticResource PhoneForegroundBrush}"
+             d:DesignHeight="480" d:DesignWidth="480">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <!-- Background -->
+
+
+        <!-- Header -->
+        <StackPanel>
+            <!--<StackPanel
+                Margin="20, 25, 10, 5">
+                <TextBlock Text="Peruka"
+                           FontFamily="Franklin Gothic Medium"
+                           Style="{StaticResource PhoneTextTitle2Style}"
+                           FontWeight="Bold" />
+                <TextBlock Text="Track your routes"
+                           FontFamily="Franklin Gothic Medium"
+                           Style="{StaticResource PhoneTextSmallStyle}"
+                           VerticalAlignment="Bottom" />
+            </StackPanel>-->
+        </StackPanel>
+
+        <Grid Grid.Row="1" Margin="12">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+            </Grid>
+            <Button
+                x:Name="StartTracking"
+                Content="Start tracking"
+                Margin="0,30,0,10" />
+            <Button
+                x:Name="StopTracking"
+                Content="Stop tracking"
+                Grid.Row="1"
+                Margin="0,30,0,10" />
+        </Grid>
+    </Grid>
+</UserControl>

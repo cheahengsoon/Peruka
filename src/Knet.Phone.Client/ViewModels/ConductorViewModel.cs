@@ -15,6 +15,8 @@
 
         private bool _initializationExecuted;
 
+        private bool _backNavSkipOne;
+
         /// <summary>
         /// Gets or sets a value indicating whether the ViewModel is busy like initializing or searching.
         /// </summary>
@@ -59,6 +61,33 @@
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether previous page is removed the source page from the back stack.
+        /// </summary>
+        /// <remarks>
+        /// Usage :  
+        /// <code>
+        /// this.navigationService.UriFor{ViewModelWhereToNavigate}().WithParam(p => p.BackNavSkipOne, true).Navigate();
+        /// </code>
+        /// </remarks>
+        public bool BackNavSkipOne
+        {
+            get
+            {
+                return this._backNavSkipOne;
+            }
+
+            set
+            {
+                if (value.Equals(this._backNavSkipOne))
+                {
+                    return;
+                }
+                this._backNavSkipOne = value;
+                this.NotifyOfPropertyChange(() => this.BackNavSkipOne);
+            }
+        }
+
         protected override void OnInitialize()
         {
             if (!this._initializationExecuted)
@@ -81,7 +110,7 @@
                 return;
             }
 
-            this.LoadActiveItemsContentAsync("Loading content...");
+            this.LoadActiveItemsContentAsync("Loading...");
         }
 
         private async void LoadActiveItemsContentAsync(string message)

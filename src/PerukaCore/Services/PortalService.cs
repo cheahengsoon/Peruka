@@ -85,7 +85,7 @@
 
         public async Task<IEnumerable<ArcGISPortalItem>> LoadBasemapGalleryAsync(int limit = 10)
         {
-            var parameters = new SearchParameters() { Limit = limit };
+            var parameters = new SearchParameters { Limit = limit };
 
             // Load ArcGISPortalItems from the Online that contains basemaps.
             var items = await _portal.LoadBasemapGalleryAsync(parameters);

@@ -25,7 +25,6 @@
             var parameters = new Dictionary<string, string>
                 {
                     { "f", "json" },
-                    //{ "attachment", parameter.FeatureId.ToString(CultureInfo.InvariantCulture) + ".jpg" }
                     { "attachment", parameter.Name + ".jpg" }
                 };
 

@@ -8,9 +8,22 @@
 
     public abstract class GeoService : PropertyChangedBase
     {
+        public enum GeoServiceStatus
+        {
+            NotSet,
+
+            Started,
+
+            Stopped
+        }
+
         private GeoCoordinateWatcher _coordinateWatcher;
 
         private bool _isInitialized;
+
+        private GeoServiceStatus _serviceStatus;
+
+        private bool _isCollecting;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="GeoService" /> class.
@@ -41,6 +54,46 @@
                 }
                 _coordinateWatcher = value;
                 NotifyOfPropertyChange(() => CoordinateWatcher);
+            }
+        }
+
+        /// <summary>
+        /// Gets the status of the service.
+        /// </summary>
+        public GeoServiceStatus ServiceStatus
+        {
+            get
+            {
+                return _serviceStatus;
+            }
+            protected set
+            {
+                if (value == _serviceStatus)
+                {
+                    return;
+                }
+                _serviceStatus = value;
+                NotifyOfPropertyChange(() => ServiceStatus);
+            }
+        }
+
+        /// <summary>
+        ///     Gets the value indicating whether the service is collection GPS information.
+        /// </summary>
+        public bool IsCollecting
+        {
+            get
+            {
+                return _isCollecting;
+            }
+            set
+            {
+                if (value.Equals(_isCollecting))
+                {
+                    return;
+                }
+                _isCollecting = value;
+                NotifyOfPropertyChange(() => IsCollecting);
             }
         }
 
@@ -90,20 +143,23 @@
         public void Start()
         {
             CoordinateWatcher.Start();
+            ServiceStatus = GeoServiceStatus.Started;
             Debug.WriteLine("GeoCoordinateWather started.");
         }
 
         public void Stop()
         {
             CoordinateWatcher.Stop();
+            ServiceStatus = GeoServiceStatus.Stopped;
+            IsCollecting = false;
             Debug.WriteLine("GeoCoordinateWather stopped.");
         }
 
         /// <summary>
-        ///     Override when want to handle
+        ///     Override when to handle position changed events.
         /// </summary>
         /// <param name="coordinate"></param>
-        public abstract void HandlePostionChanged(GeoPosition<GeoCoordinate> coordinate);
+        public abstract void HandlePositionChanged(GeoPosition<GeoCoordinate> coordinate);
 
         private void CoordinateWatcherOnStatusChanged(object sender, GeoPositionStatusChangedEventArgs statusEventArgs)
         {
@@ -112,27 +168,40 @@
             {
                 case GeoPositionStatus.Disabled:
                     // The Location Service is disabled.
+                    if (IsCollecting)
+                    {
+                        IsCollecting = false;
+                    }
                     break;
                 case GeoPositionStatus.Initializing:
                     // The Location Service is initializing.
+                    if (IsCollecting)
+                    {
+                        IsCollecting = false;
+                    }
                     break;
                 case GeoPositionStatus.NoData:
                     // The Location Service is working, but it cannot get location data.
+                    if (IsCollecting)
+                    {
+                        IsCollecting = false;
+                    }
                     break;
                 case GeoPositionStatus.Ready:
                     // The Location Service is working and is receiving location data.
+                    IsCollecting = true;
                     break;
             }
         }
 
         private void PositionChanged(object sender, GeoPositionChangedEventArgs<GeoCoordinate> e)
         {
-            if (_coordinateWatcher.Status != GeoPositionStatus.Ready)
+            if (ServiceStatus != GeoServiceStatus.Started || IsCollecting == false)
             {
                 return;
             }
 
-            HandlePostionChanged(e.Position);
+            HandlePositionChanged(e.Position);
         }
     }
 }

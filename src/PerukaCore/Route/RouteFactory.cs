@@ -8,20 +8,21 @@
 
     public static class RouteFactory
     {
-        public static Graphic Create(GeoPosition<GeoCoordinate> geoPosition, string username, int spatialReference = 4326)
+        public static Graphic CreatePoint(
+            GeoPosition<GeoCoordinate> geoPosition, string username, int spatialReference = 4326)
         {
-            var route = GraphicFactory.Create(geoPosition.Location);
-            route.Attributes.Add("Latitude", geoPosition.Location.Latitude);
-            route.Attributes.Add("Longitude", geoPosition.Location.Longitude);
-            route.Attributes.Add("Speed", geoPosition.Location.Speed);
-            route.Attributes.Add("Altitude", geoPosition.Location.Altitude);
-            route.Attributes.Add("HorizontalAccuracy", geoPosition.Location.HorizontalAccuracy);
-            route.Attributes.Add("VertialAccuracy", geoPosition.Location.VerticalAccuracy);
-            route.Attributes.Add("Course", geoPosition.Location.Course);
-            route.Attributes.Add("RecordTime", geoPosition.Timestamp);
-            route.Attributes.Add("UserName", username);
+            var routePoint = GraphicFactory.Create(geoPosition.Location);
+            routePoint.Attributes.Add("Latitude", geoPosition.Location.Latitude);
+            routePoint.Attributes.Add("Longitude", geoPosition.Location.Longitude);
+            routePoint.Attributes.Add("Speed", geoPosition.Location.Speed);
+            routePoint.Attributes.Add("Altitude", geoPosition.Location.Altitude);
+            routePoint.Attributes.Add("HorizontalAccuracy", geoPosition.Location.HorizontalAccuracy);
+            routePoint.Attributes.Add("VertialAccuracy", geoPosition.Location.VerticalAccuracy);
+            routePoint.Attributes.Add("Course", geoPosition.Location.Course);
+            routePoint.Attributes.Add("RecordTime", geoPosition.Timestamp);
+            routePoint.Attributes.Add("UserName", username);
 
-            return route;
+            return routePoint;
         }
     }
 }

@@ -93,6 +93,10 @@
     <Compile Include="Extensions\PortalExtensions.cs" />
     <Compile Include="Extensions\QueryTaskExtensions.cs" />
     <Compile Include="Graphics\GraphicFactory.cs" />
+    <Compile Include="Layers\CreateLayersTask.cs" />
+    <Compile Include="Layers\LayerFactory.cs" />
+    <Compile Include="Layers\LayersCreatedEventArgs.cs" />
+    <Compile Include="MapControllers\MapControllers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serialization\ArcGISSerializationUtils.cs" />
     <Compile Include="Serialization\JsonSerializer.cs" />
@@ -108,6 +112,7 @@
     <Compile Include="Tasks\GetAttachementInfoResults.cs" />
     <Compile Include="Tasks\GetAttachementInfoTask.cs" />
     <Compile Include="Tasks\TaskBase.cs" />
+    <Compile Include="Tasks\TaskError.cs" />
     <Compile Include="Tasks\TaskResultsBase.cs" />
     <Compile Include="Tasks\UpdateAttachementTask.cs" />
     <Compile Include="Tasks\UpdateAttachmentParameters.cs" />
@@ -133,12 +138,18 @@
     <EmbeddedResource Include="UrlResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>UrlResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Knet.Phone.Client\Knet.Phone.Client.csproj">
+      <Project>{E4D78844-A195-448A-B01E-ABC969308345}</Project>
+      <Name>Knet.Phone.Client</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />
   <ProjectExtensions />

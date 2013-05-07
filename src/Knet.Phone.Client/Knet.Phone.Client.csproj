@@ -86,11 +86,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Caliburn\AutofacPhoneContainer.cs" />
+    <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\CollectionCountVisibilityConverter.cs" />
     <Compile Include="Converters\HtmlTextTrimContinousConverter.cs" />
     <Compile Include="Converters\NotNullToCollapsedConverter.cs" />
     <Compile Include="Converters\NullToCollapsedConverter.cs" />
     <Compile Include="Converters\StringToVisibilityConverter.cs" />
+    <Compile Include="DataContextProxy.cs" />
     <Compile Include="IContent.cs" />
     <Compile Include="IRefreshableContent.cs" />
     <Compile Include="PhoneClientModule.cs" />

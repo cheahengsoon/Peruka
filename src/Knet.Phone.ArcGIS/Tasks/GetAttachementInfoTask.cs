@@ -30,7 +30,7 @@
                 results = GetAttachementInfoResults.Create(result.Result);
                 results.FeatureId = parameter.FeatureId;
             }
-            catch (Exception exception)
+            catch (Exception exception) 
             {
                 results.Error = exception;
             }

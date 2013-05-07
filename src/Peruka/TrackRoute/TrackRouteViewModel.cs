@@ -1,31 +1,64 @@
 ﻿namespace Peruka.Phone.Client.Presentation.TrackRoute
 {
+    using Caliburn.Micro;
+
     using Knet.Phone.Client.ViewModels;
 
     using Peruka.Phone.Client.Core.Services;
+    using Peruka.Phone.Client.Presentation.Map;
+    using Peruka.Phone.Client.Presentation.TrackRoute.Details;
 
-    public class TrackRouteViewModel : ScreenViewModel
+    public class TrackRouteViewModel : ConductorViewModel
     {
-        private readonly RouteService _routeService;
+        private readonly RouteDetailsViewModel _routeDetailsViewModel;
 
-        public TrackRouteViewModel(RouteService routeService)
+        private readonly INavigationService _navigationService;
+
+        private RouteService _routeService;
+
+        public TrackRouteViewModel(
+            RouteService routeService, RouteDetailsViewModel routeDetailsViewModel, INavigationService navigationService)
         {
-            _routeService = routeService;
-            _routeService.InitializeAsync();
+            RouteService = routeService;
+            _routeDetailsViewModel = routeDetailsViewModel;
+            _navigationService = navigationService;
+
+            Items.Add(_routeDetailsViewModel);
         }
 
-        #region Commanding methods
-
-        public void StartTracking()
+        public RouteService RouteService
         {
-            _routeService.Start();
+            get
+            {
+                return _routeService;
+            }
+            private set
+            {
+                if (Equals(value, _routeService))
+                {
+                    return;
+                }
+                _routeService = value;
+                NotifyOfPropertyChange(() => RouteService);
+            }
         }
 
-        public void StopTracking()
+        public bool IsCollecting
         {
-            _routeService.Stop();
+            get
+            {
+                return _routeService.IsCollecting;
+            }
         }
 
-        #endregion
+        public void NavigateToMap()
+        {
+            _navigationService.UriFor<RouteMapViewModel>().Navigate();
+        }
+
+        protected override async void OnActivate()
+        {
+            await _routeService.InitializeAsync();
+        }
     }
 }

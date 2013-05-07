@@ -6,20 +6,10 @@
 
     public abstract class TaskBase<TParameters, TResults>
     {
-        #region Variables
-
-        #endregion // Variables
-
-        #region Constructor
-
         protected TaskBase()
         {
             this.WebClient = new ArcGISWebClient();
         }
-
-        #endregion
-
-        #region Properties
 
         /// <summary>
         ///     Gets or sets the target service url
@@ -30,8 +20,6 @@
         ///     Gets the <see cref="ArcGISWebClient" /> used.
         /// </summary>
         protected ArcGISWebClient WebClient { get; private set; }
-
-        #endregion
 
         /// <summary>
         ///     Executes task.
